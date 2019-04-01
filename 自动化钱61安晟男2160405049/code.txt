@@ -1,0 +1,198 @@
+butterworth低通：
+clear;
+clc;
+
+img=imread('test2.tif');
+d0 = 20;  %阈值
+img_f=fftshift(fft2(double(img)));  %傅里叶变换得到频谱
+[x,y]=size(img_f);
+m_mid=fix(x/2);
+n_mid=fix(y/2);  
+n=2;
+img_lpf=zeros(x,y);
+for i=1:x
+    for j=1:y
+        d=sqrt((i-m_mid)^2+(j-n_mid)^2);   %理想低通滤波，求距离
+        h(i,j)=1/(1+(d/d0)^(2*n));
+        img_lpf(i,j)=h(i,j)*img_f(i,j);  
+    end
+end
+
+img_pass=ifftshift(img_lpf);    %反傅里叶变换
+img_pass=uint8(real(ifft2(img_pass)));  %取实数部分
+
+subplot(2,2,1);imshow(img);title('原图');
+subplot(2,2,2);imshow(img_f);title('原图频域');
+subplot(2,2,3);imshow(img_pass);title('滤波后');
+subplot(2,2,4);imshow(img_lpf);title('滤波后频域');
+
+S_ori = abs(sum(sum(img_f.*img_f)));
+S_pro = abs(sum(sum(img_lpf.*img_lpf)));
+ratio = S_pro/S_ori
+
+gaussian低通：
+clear;
+clc;
+
+img=imread('test1.pgm');
+d0 = 20;  %阈值
+img_f=fftshift(fft2(double(img)));  %傅里叶变换得到频谱
+[x,y]=size(img_f);
+m_mid=fix(x/2);
+n_mid=fix(y/2);  
+n=2;
+img_lpf=zeros(x,y);
+for i=1:x
+    for j=1:y
+        d=sqrt((i-m_mid)^2+(j-n_mid)^2);   %理想低通滤波，求距离
+        h(i,j)=exp(-d*d/(2*d0*d0));
+        img_lpf(i,j)=h(i,j)*img_f(i,j);  
+    end
+end
+
+img_pass=ifftshift(img_lpf);    %反傅里叶变换
+img_pass=uint8(real(ifft2(img_pass)));  %取实数部分
+
+
+subplot(2,2,1);imshow(img);title('原图');
+subplot(2,2,2);imshow(img_f);title('原图频域');
+subplot(2,2,3);imshow(img_pass);title('滤波后');
+subplot(2,2,4);imshow(img_lpf);title('滤波后频域');
+
+S_ori = abs(sum(sum(img_f.*img_f)));
+S_pro = abs(sum(sum(img_lpf.*img_lpf)));
+ratio = S_pro/S_ori
+
+butterworth高通：
+clear;
+clc;
+
+img=imread('test3_corrupt.pgm');
+d0 = 10;  %阈值
+img_f=fftshift(fft2(double(img)));  %傅里叶变换得到频谱
+[x,y]=size(img_f);
+m_mid=fix(x/2);
+n_mid=fix(y/2);  
+n=2;
+img_lpf=zeros(x,y);
+for i=1:x
+    for j=1:y
+        d=sqrt((i-m_mid)^2+(j-n_mid)^2);   %理想低通滤波，求距离
+        h(i,j)=(1+1/(1+(d0/d)^(2*n)));
+        img_lpf(i,j)=h(i,j)*img_f(i,j);  
+    end
+end
+
+img_pass=ifftshift(img_lpf);    %反傅里叶变换
+img_pass=uint8(real(ifft2(img_pass)));  %取实数部分
+
+
+subplot(2,2,1);imshow(img);title('原图');
+subplot(2,2,2);imshow(img_f);title('原图频域');
+subplot(2,2,3);imshow(img_pass);title('滤波后');
+subplot(2,2,4);imshow(img_lpf);title('滤波后频域');
+
+S_ori = abs(sum(sum(img_f.*img_f)));
+S_pro = abs(sum(sum(img_lpf.*img_lpf)));
+ratio = S_pro/S_ori
+
+gaussian高通：
+clear;
+clc;
+
+img=imread('test3_corrupt.pgm');
+d0 = 10;  %阈值
+img_f=fftshift(fft2(double(img)));  %傅里叶变换得到频谱
+[x,y]=size(img_f);
+m_mid=fix(x/2);
+n_mid=fix(y/2);  
+n=2;
+img_lpf=zeros(x,y);
+for i=1:x
+    for j=1:y
+        d=sqrt((i-m_mid)^2+(j-n_mid)^2);   %理想低通滤波，求距离
+        h(i,j)=1+1-exp(-d*d/(2*d0*d0));
+        img_lpf(i,j)=h(i,j)*img_f(i,j);  
+    end
+end
+
+img_pass=ifftshift(img_lpf);    %反傅里叶变换
+img_pass=uint8(real(ifft2(img_pass)));  %取实数部分
+
+
+subplot(2,2,1);imshow(img);title('原图');
+subplot(2,2,2);imshow(img_f);title('原图频域');
+subplot(2,2,3);imshow(img_pass);title('滤波后');
+subplot(2,2,4);imshow(img_lpf);title('滤波后频域');
+
+S_ori = abs(sum(sum(img_f.*img_f)));
+S_pro = abs(sum(sum(img_lpf.*img_lpf)));
+ratio = S_pro/S_ori
+
+laplace高通：
+clear;
+clc;
+
+img=imread('test4 copy.bmp');
+img_f=fftshift(fft2(double(img)));  %傅里叶变换得到频谱
+[x,y]=size(img_f);
+m_mid=fix(x/2);
+n_mid=fix(y/2);  
+n=2;
+img_lpf=zeros(x,y);
+d0 = 20;
+for i=1:x
+    for j=1:y
+        d=sqrt((i-m_mid)^2+(j-n_mid)^2);   %理想低通滤波，求距离
+        h(i,j)=-d*d/(d0*d0);
+        img_lpf(i,j)=h(i,j)*img_f(i,j);  
+    end
+end
+
+img_pass=ifftshift(img_lpf);    %反傅里叶变换
+img_pass=uint8(real(ifft2(img_pass)));  %取实数部分
+
+
+subplot(2,2,1);imshow(img);title('原图');
+subplot(2,2,2);imshow(img_f);title('原图频域');
+subplot(2,2,3);imshow(img_pass);title('滤波后');
+subplot(2,2,4);imshow(img_lpf);title('滤波后频域');
+
+S_ori = abs(sum(sum(img_f.*img_f)));
+S_pro = abs(sum(sum(img_lpf.*img_lpf)));
+ratio = S_pro/S_ori
+
+unsharp mask高通：
+clear;
+clc;
+
+img=imread('test4 copy.bmp');
+d0 = 10;  %阈值
+img_f=fftshift(fft2(double(img)));  %傅里叶变换得到频谱
+[x,y]=size(img_f);
+m_mid=fix(x/2);
+n_mid=fix(y/2);  
+n=2;
+k1=1;
+k2=0.75;
+img_lpf=zeros(x,y);
+for i=1:x
+    for j=1:y
+        d=sqrt((i-m_mid)^2+(j-n_mid)^2);   %理想低通滤波，求距离
+        h(i,j)=1-exp(-d*d/(2*d0*d0));
+        img_lpf(i,j)=(k1+k2*h(i,j))*img_f(i,j);  
+    end
+end
+
+img_pass=ifftshift(img_lpf);    %反傅里叶变换
+img_pass=uint8(real(ifft2(img_pass)));  %取实数部分
+
+
+subplot(2,2,1);imshow(img);title('原图');
+subplot(2,2,2);imshow(img_f);title('原图频域');
+subplot(2,2,3);imshow(img_pass);title('滤波后');
+subplot(2,2,4);imshow(img_lpf);title('滤波后频域');
+
+S_ori = abs(sum(sum(img_f.*img_f)));
+S_pro = abs(sum(sum(img_lpf.*img_lpf)));
+ratio = S_pro/S_ori
